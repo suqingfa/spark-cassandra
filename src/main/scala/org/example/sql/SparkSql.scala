@@ -1,14 +1,8 @@
 package org.example.sql
 
-import org.apache.spark.sql.SparkSession
-
 object SparkSql {
   def main(args: Array[String]): Unit = {
-    val spark = SparkSession
-      .builder()
-      .master("local[*]")
-      .appName(this.getClass.getSimpleName)
-      .getOrCreate()
+    val spark = SparkContext.spark
 
     val users = spark.read.json("datas/user.json")
     users.createOrReplaceTempView("user")
