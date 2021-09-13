@@ -18,9 +18,18 @@ object SparkWindowFunction {
 
     df.createOrReplaceTempView("stock_quote")
 
+    spark.sql("select * from stock_quote").show()
+
+    spark.sql(
+      """
+        |select *,
+        |       min(close) over (partition by id order by trading_day rows between 1 preceding and 1 preceding) as pre_close
+        |from stock_quote
+        |""".stripMargin).show()
+
     val dataFrame = spark.sql(
       """
-        |select *, (close - pre_close) / close as yield
+        |select *, (close - pre_close) / pre_close as yield
         |from (
         |         select *,
         |                min(close) over (partition by id order by trading_day rows between 1 preceding and 1 preceding) as pre_close
